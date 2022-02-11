@@ -9,16 +9,27 @@ public class Player : MonoBehaviour
     [SerializeField]
     float speed = 3f;
     float gravity = 9.8f;
-    
-    // Start is called before the first frame update
+    [SerializeField]
+    GameObject muzzleFlash;
+    [SerializeField]
+    GameObject hitMarker;
+    [SerializeField]
+    AudioSource weaponAudio;
+    [SerializeField]
+    public int currentAmmo;
+    [SerializeField]
+    public bool hasCoin = false;
+    int maxAmmo = 50;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        currentAmmo = maxAmmo;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -27,21 +38,41 @@ public class Player : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
         }
 
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            StartCoroutine(Reload());
+        }
+
         CalculateMovement();
         Shoot();
     }
 
     void Shoot()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0) && currentAmmo > 0)
         {
+            muzzleFlash.SetActive(true);
+
+            if (weaponAudio.isPlaying == false)
+            {
+                weaponAudio.Play();
+            }
+
+            currentAmmo-- ;
+            
             Ray rayOrigin = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0));
             RaycastHit hitInfo;
 
             if (Physics.Raycast(rayOrigin, out hitInfo))
             {
                 Debug.Log("You hit: " + hitInfo.transform.name);
+                Instantiate(hitMarker, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
             }
+        }
+        else
+        {
+            muzzleFlash.SetActive(false);
+            weaponAudio.Stop();
         }
     }
 
@@ -58,4 +89,11 @@ public class Player : MonoBehaviour
 
         transform.position = GetComponent<NavMeshAgent>().nextPosition;
     }
+
+    IEnumerator Reload()
+    {
+        yield return new WaitForSeconds(2.5f);
+        currentAmmo = maxAmmo;
+    }
+
 }
