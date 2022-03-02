@@ -19,11 +19,16 @@ public class Player : MonoBehaviour
     public int currentAmmo;
     [SerializeField]
     public bool hasCoin = false;
+    [SerializeField]
+    AudioSource audioSource;
+    [SerializeField]
+    GameObject weapon;
     int maxAmmo = 50;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        audioSource = GetComponent<AudioSource>();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -94,6 +99,16 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(2.5f);
         currentAmmo = maxAmmo;
+    }
+
+    public void playWinSFX()
+    {
+        audioSource.Play();
+    }
+
+    public void equipWeapon()
+    {
+        weapon.SetActive(true);
     }
 
 }

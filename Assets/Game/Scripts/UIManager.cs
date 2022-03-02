@@ -12,6 +12,10 @@ public class UIManager : MonoBehaviour
     Text coinHint;
     [SerializeField]
     GameObject coinImage;
+    [SerializeField]
+    Text buyWeaponHint;
+    [SerializeField]
+    Text noCoinWarning;
     
     // Start is called before the first frame update
     void Start()
@@ -30,6 +34,11 @@ public class UIManager : MonoBehaviour
         coinImage.SetActive(true);
     }
 
+    public void SpendCoin()
+    {
+        coinImage.SetActive(false);
+    }
+
     public void ShowCoinHint()
     {
         coinHint.gameObject.SetActive(true);
@@ -38,5 +47,22 @@ public class UIManager : MonoBehaviour
     public void HideCoinHint()
     {
         coinHint.gameObject.SetActive(false);
+    }
+
+    public void ShowWeaponHint()
+    {
+        buyWeaponHint.gameObject.SetActive(true);
+    }
+
+    public void HideWeaponHint()
+    {
+        buyWeaponHint.gameObject.SetActive(false);
+    }
+
+    public IEnumerator ShowNoCoinWarning()
+    {
+        noCoinWarning.gameObject.SetActive(true);
+        yield return new WaitForSeconds(3.0f);
+        noCoinWarning.gameObject.SetActive(false);
     }
 }

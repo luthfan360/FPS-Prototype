@@ -4,22 +4,42 @@ using UnityEngine;
 
 public class WeaponShop : MonoBehaviour
 {
+    UIManager uimanager;
+
+    void Start()
+    {
+        uimanager = GameObject.Find("Canvas").GetComponent<UIManager>();
+    }
+    
     void OnTriggerStay(Collider other)
     {
         if (other.tag == "Player")
         {
-            //Press "E" to buy a Weapon
+            uimanager.ShowWeaponHint();
+            Player player = other.GetComponent<Player>();
             
             if (Input.GetKeyDown(KeyCode.E))
             {
-                //check player nya punya coin atau tidak
-                //kalo punya coin, coin nya akan diambil
-                //player dapat weapon
-                //play sound effect
-
-                //kalau tidak ada coin
-                //munculkan message "you don't have a coin"
+                if (player.hasCoin == true)
+                {
+                    player.hasCoin = false;
+                    uimanager.SpendCoin();
+                    player.playWinSFX();
+                    player.equipWeapon();
+                }
+                else
+                {
+                    StartCoroutine(uimanager.ShowNoCoinWarning());
+                }
             }
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            uimanager.HideWeaponHint();
         }
     }
 }
