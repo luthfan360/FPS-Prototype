@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        currentAmmo = maxAmmo;
+        currentAmmo = 0;
     }
 
     void Update()
@@ -54,7 +54,7 @@ public class Player : MonoBehaviour
 
     void Shoot()
     {
-        if (Input.GetMouseButton(0) && currentAmmo > 0)
+        if (Input.GetMouseButton(0) && currentAmmo > 0 && weapon.activeSelf)
         {
             muzzleFlash.SetActive(true);
 
@@ -72,6 +72,12 @@ public class Player : MonoBehaviour
             {
                 Debug.Log("You hit: " + hitInfo.transform.name);
                 Instantiate(hitMarker, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+
+                Destructable crate = hitInfo.transform.GetComponent<Destructable>();
+                if (crate != null)
+                {
+                    crate.DestroyCrate();
+                }
             }
         }
         else
@@ -109,6 +115,7 @@ public class Player : MonoBehaviour
     public void equipWeapon()
     {
         weapon.SetActive(true);
+        currentAmmo = maxAmmo;
     }
 
 }
